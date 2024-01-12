@@ -37,7 +37,7 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false
       },
-      password: {
+      hashedPassword: {
         type: DataTypes.STRING,
         allowNull: false
       },

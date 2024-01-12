@@ -3,11 +3,13 @@ const {sequelize} = require('./models')
 const app = express();
 
 const authRoute = require('./routes/auth');
+const mainRoute = require('./routes/main');
+const adminRoute = require('./routes/admin');
 
 const port = process.env.PORT || 3000;
 
 app.use(express.json())
-app.use(authRoute)
+app.use(authRoute, mainRoute, adminRoute)
 
 app.listen(port, async () => {
     console.log(`listen to port: ${port}`)
