@@ -9,14 +9,6 @@ module.exports = {
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      uuid: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4
-      },
-      nik: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       nama: {
         type: DataTypes.STRING,
         allowNull: false

@@ -8,13 +8,12 @@ const saltRound = 10;
 const secretKey = process.env.KRKO_JWT_SECRET;
 
 const registerHandler = async (req, res) => {
-  const { nik, nama, email, telp, alamat, password } = req.body;
+  const { nama, email, telp, alamat, password } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, saltRound);
 
   try {
     const users = await User.create({
-      nik,
       nama,
       email,
       telp,
@@ -29,12 +28,12 @@ const registerHandler = async (req, res) => {
 };
 
 const loginHandler = async (req, res) => {
-  const { nik, password } = req.body;
+  const { email, password } = req.body;
 
   try {
     const user = await User.findOne({
       where: {
-        nik: nik,
+        email: email,
       },
     });
 
@@ -47,14 +46,13 @@ const loginHandler = async (req, res) => {
     const token = jwt.sign(
       {
         userId: user.id,
-        nik: user.nik,
+        email: user.email,
       },
       secretKey,
       {
         expiresIn: "1h",
       }
     );
-
     return res.status(200).json({ message: "Login successful", token });
   } catch (err) {
     console.log(err);
@@ -69,7 +67,7 @@ const adminLoginHandler = async (req, res) => {
     const user = await User.findOne({
       where: {
         nama: nama,
-        role: 'Admin'
+        role: "Admin",
       },
     });
 
@@ -80,18 +78,20 @@ const adminLoginHandler = async (req, res) => {
     }
 
     const adminToken = jwt.sign(
-        {
-          userId: user.id,
-          nik: user.nik,
-          role: 'Admin'
-        },
-        secretKey,
-        {
-          expiresIn: "1h",
-        }
-      );
-  
-      return res.status(200).json({ message: "Admin Login successful", adminToken });
+      {
+        userId: user.id,
+        nama: user.nama,
+        role: "Admin",
+      },
+      secretKey,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    return res
+      .status(200)
+      .json({ message: "Admin Login successful", adminToken });
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
