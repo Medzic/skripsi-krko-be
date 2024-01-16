@@ -1,5 +1,5 @@
 const { where } = require("sequelize");
-const { Pengajuan, User } = require("../models");
+const { Pengajuan,} = require("../models");
 
 const createPengajuan = async (req, res) => {
   const {
@@ -55,6 +55,7 @@ const getAllPengajuan = async (req, res) => {
         userId: userId,
       },
     });
+
     return res.json(getPengajuan);
   } catch (err) {
     console.log(err);
