@@ -74,7 +74,7 @@ const getOnePengajuan = async (req, res) => {
 
     //filter user yang dapat mengakses berdasarkan id user dari decoded token
     if (getOnePengajuan.userId !== userId)
-      return res.status(404).json({ message: "Unauthorized User" });
+      return res.status(401).json({ message: "Unauthorized User" });
 
     return res.json(getOnePengajuan);
   } catch (err) {
