@@ -60,6 +60,27 @@ const loginHandler = async (req, res) => {
   }
 };
 
+const adminRegisterHandler = async (req, res) => {
+  const { nama, email, telp, alamat, role, password } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password, saltRound);
+
+  try {
+    const users = await User.create({
+      nama,
+      email,
+      telp,
+      alamat,
+      role,
+      hashedPassword,
+    });
+    return res.json(users);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+};
+
 const adminLoginHandler = async (req, res) => {
   const { nama, password } = req.body;
 
@@ -101,5 +122,6 @@ const adminLoginHandler = async (req, res) => {
 module.exports = {
   registerHandler,
   loginHandler,
+  adminRegisterHandler,
   adminLoginHandler,
 };

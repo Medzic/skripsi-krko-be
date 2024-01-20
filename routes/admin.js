@@ -1,12 +1,12 @@
 const express = require('express');
 const {checkAdmin} = require('../middleware/userAuth');
+const { adminAccHandler } = require('../handlers/adminHandler');
+const { adminRegisterHandler } = require('../handlers/authHandler');
 
 const router = express.Router();
 
-router.use(checkAdmin);
+router.post("/admin/register", checkAdmin, adminRegisterHandler);
 
-router.get('/adminDashboard', (req,res) =>{
-    res.send('hello world')
-})
+router.patch('/admin/pengajuan/:id', checkAdmin ,adminAccHandler)
 
 module.exports = router

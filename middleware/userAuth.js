@@ -22,7 +22,7 @@ const authMiddleware = (req, res, next) => {
     }
 
     req.userId = decoded.userId;
-    next(); 
+    next();
   });
 };
 
@@ -39,14 +39,15 @@ const checkAdmin = async (req, res, next) => {
     if (authType !== "Bearer")
       return res.status(401).json({ message: "Unauthorized Auth Type" });
 
-    
-    const decodedToken = await jwt.verify(authToken, secretKey);
+    jwt.verify(authToken, secretKey, (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "invalid token" });
+      }
+      if (!decoded.role || decoded.role !== "Admin") {
+        return res.status(401).json({ message: "Antum bukan admin, silahkan hubungi admin" });
+      }
+    });
 
-    if (!decodedToken.role || decodedToken.role !== "Admin") {
-      return res.status(403).json({ error: "Forbidden" });
-    }
-
-    req.user = decodedToken; // Attach decoded user object to the request (optional)
     next();
   } catch (err) {
     console.error(err);
@@ -54,4 +55,4 @@ const checkAdmin = async (req, res, next) => {
   }
 };
 
-module.exports = {authMiddleware, checkAdmin};
+module.exports = { authMiddleware, checkAdmin };
