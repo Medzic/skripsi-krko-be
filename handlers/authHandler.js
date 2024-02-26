@@ -13,6 +13,14 @@ const registerHandler = async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, saltRound);
 
   try {
+    //filter apakah email sudah pernah medaftar
+    const existingUser = await User.findOne({
+      where: { email: req.body.email },
+    });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already exists" });
+    }
+
     const users = await User.create({
       nama,
       email,
@@ -66,6 +74,14 @@ const adminRegisterHandler = async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, saltRound);
 
   try {
+    //filter apakah email sudah pernah medaftar
+    const existingUser = await User.findOne({
+      where: { email: req.body.email },
+    });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already exists" });
+    }
+
     const users = await User.create({
       nama,
       email,

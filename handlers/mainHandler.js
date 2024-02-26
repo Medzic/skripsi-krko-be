@@ -1,5 +1,5 @@
 const { where } = require("sequelize");
-const { Pengajuan,} = require("../models");
+const { Pengajuan } = require("../models");
 
 const createPengajuan = async (req, res) => {
   const {

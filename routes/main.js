@@ -13,6 +13,12 @@ const {
   getLokasi,
   deleteLokasi,
 } = require("../handlers/lokasiHandler");
+const {
+  uploadHandler,
+  getAllFileHandler,
+  editFileHandler,
+  deleteFileHandler,
+} = require("../handlers/fileHandler");
 
 const router = express.Router();
 
@@ -30,5 +36,9 @@ router.put("/lokasi/edit/:id", authMiddleware, updateLokasi);
 router.delete("/lokasi/delete/:id", authMiddleware, deleteLokasi);
 
 //dokumen endpoint
+router.post("/dokumen/upload", authMiddleware, uploadHandler);
+router.get("/dokumen/:id", authMiddleware, getAllFileHandler);
+router.put("/dokumen/edit/:id", authMiddleware, editFileHandler);
+router.delete("/dokumen/:id", authMiddleware, deleteFileHandler);
 
 module.exports = router;
