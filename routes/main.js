@@ -12,6 +12,7 @@ const {
   updateLokasi,
   getLokasi,
   deleteLokasi,
+  getOneLokasi,
 } = require("../handlers/lokasiHandler");
 const {
   uploadHandler,
@@ -31,7 +32,8 @@ router.delete("/pengajuan/delete/:id", authMiddleware, deletePengajuan);
 
 //lokasi endpoint
 router.post("/lokasi/create", authMiddleware, createLokasi);
-router.get("/lokasi/:id", authMiddleware, getLokasi);
+router.get("/lokasi", authMiddleware, getLokasi);
+router.get("/lokasi/:id", authMiddleware, getOneLokasi);
 router.put("/lokasi/edit/:id", authMiddleware, updateLokasi);
 router.delete("/lokasi/delete/:id", authMiddleware, deleteLokasi);
 

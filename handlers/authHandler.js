@@ -44,16 +44,17 @@ const loginHandler = async (req, res) => {
         email: email,
       },
     });
-
+   
     if (!user) {
-      return res.status(401).json({ error: "Invalid email or password" });
+      return res.status(401).json({ error: "Email yang anda masukkan salah" });
     }
-
+    
     const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
-
+    
     if (!passwordMatch) {
-      return res.status(401).json({ error: "Invalid email or password" });
+      return res.status(401).json({ error: "Password yang anda masukkan salah" });
     }
+
 
     const token = jwt.sign(
       {
@@ -65,10 +66,11 @@ const loginHandler = async (req, res) => {
         expiresIn: "1h",
       }
     );
+
     return res.status(200).json({ message: "Login successful", token });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json(err);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
   }
 };
 

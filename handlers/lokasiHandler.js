@@ -37,20 +37,62 @@ const createLokasi = async (req, res) => {
   }
 };
 
+// const getAllLokasi = async (req, res) => {
+//   const userId = req.userId;
+
+//   try {
+//     const getAllPengajuan = await Lokasi.findAll({
+//       where: {
+//         userId: userId,
+//       },
+//     });
+
+//     return res.json(getAllPengajuan);
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).json(err);
+//   }
+// }
+
 const getLokasi = async (req, res) => {
   const id = req.params.id;
 
   const userId = req.userId;
 
   try {
-    const getOneLokasi = await Lokasi.findByPk(id);
+    const getPengajuan = await Pengajuan.findAll({
+      where: {
+        userId: userId,
+      },
+      include: [Lokasi]
+    });
 
-    const getOnePengajuan = await Pengajuan.findByPk(getOneLokasi.pengajuanId);
-
-    if (getOnePengajuan.userId !== userId)
+    if (!getPengajuan.userId === userId)
       return res.status(401).json({ message: "Unauthorized User" });
 
-    return res.json(getOneLokasi);
+    return res.json(getPengajuan);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+};
+
+const getOneLokasi = async (req, res) => {
+  const id = req.params.id;
+
+  const userId = req.userId;
+
+  try {
+    const getPengajuan = await Lokasi.findByPk(id);
+
+    if(!getPengajuan)
+      return res.status(404).json({message: "data tidak ditemukan"})
+    
+
+    if (!getPengajuan.userId === userId)
+      return res.status(401).json({ message: "Unauthorized User" });
+
+    return res.json(getPengajuan);
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
@@ -110,8 +152,8 @@ const deleteLokasi = async (req, res) => {
       return res.status(401).json({ message: "Unautorized User" });
 
     await getLokasi.destroy();
-    
-    return res.json({message: "Lokasi berhasil Dihapus"})
+
+    return res.json({ message: "Lokasi berhasil Dihapus" })
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
@@ -122,5 +164,6 @@ module.exports = {
   createLokasi,
   updateLokasi,
   getLokasi,
+  getOneLokasi,
   deleteLokasi
 };
