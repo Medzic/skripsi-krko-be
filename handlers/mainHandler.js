@@ -22,13 +22,16 @@ const createPengajuan = async (req, res) => {
     //variable untuk menentukan user berdasarkan decoded jwt token
     const userId = req.userId;
 
+    const formattedNikp2 = nikp2 ? nikp2 : null;
+    const formattedNamep2 = namep2 ? namep2 : null;
+
     const pengajuans = await Pengajuan.create({
       tanggal,
       namep,
       namep1,
-      namep2,
+      namep2:formattedNamep2,
       nikp1,
-      nikp2,
+      nikp2: formattedNikp2,
       telp,
       alamat,
       rt,

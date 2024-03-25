@@ -44,7 +44,7 @@ const loginHandler = async (req, res) => {
         email: email,
       },
     });
-   
+
     if (!user) {
       return res.status(401).json({ error: "Email yang anda masukkan salah" });
     }

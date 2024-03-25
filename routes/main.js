@@ -19,6 +19,7 @@ const {
   getAllFileHandler,
   editFileHandler,
   deleteFileHandler,
+  getFileHandler,
 } = require("../handlers/fileHandler");
 
 const router = express.Router();
@@ -39,7 +40,8 @@ router.delete("/lokasi/delete/:id", authMiddleware, deleteLokasi);
 
 //dokumen endpoint
 router.post("/dokumen/upload", authMiddleware, uploadHandler);
-router.get("/dokumen/:id", authMiddleware, getAllFileHandler);
+router.get("/dokumen", authMiddleware, getAllFileHandler);
+router.get("/dokumen/:id", authMiddleware, getFileHandler);
 router.put("/dokumen/edit/:id", authMiddleware, editFileHandler);
 router.delete("/dokumen/:id", authMiddleware, deleteFileHandler);
 

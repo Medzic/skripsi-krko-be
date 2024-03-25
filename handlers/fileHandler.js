@@ -9,8 +9,21 @@ const bucket = storage.bucket("pdf_bucket_01");
 const uploadHandler = async (req, res) => {
   try {
     await processFile(req, res);
+    
+    const userId = req.userId;
+    
+    const getFileDb = await Pengajuan.findAll({
+      where: {
+        userId: userId,
+      },
+    });
 
-    const pengajuanId = req.body.id;
+    const dbData = getFileDb.map((file) => file.id);
+
+    const pengajuanId = parseInt(req.body.id);
+
+    if (!dbData.includes(pengajuanId)) return res.status(401).send({ message: "unauthorized" })
+
     if (!pengajuanId) {
       return res
         .status(400)
@@ -73,7 +86,7 @@ const uploadHandler = async (req, res) => {
   }
 };
 
-const getAllFileHandler = async (req, res) => {
+const getFileHandler = async (req, res) => {
   const pengajuanId = req.params.id;
 
   try {
@@ -90,6 +103,49 @@ const getAllFileHandler = async (req, res) => {
     const filterStorageFiles = storageFiles.filter((file) =>
       dbData.includes(file.name)
     );
+
+    if (filterStorageFiles.length === 0) {
+      // Handle the case where no matching files are found
+      return res.status(404).json({ message: "No matching files found." });
+    }
+
+    const fileInfos = filterStorageFiles.map((file) => ({
+      name: file.name,
+      url: file.metadata.mediaLink,
+    }));
+
+    return res.status(200).json(fileInfos);
+  } catch (err) {
+    console.error("Error:", err);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+const getAllFileHandler = async (req, res) => {
+  const pengajuanId = req.params.id;
+
+  const userId = req.userId;
+
+  try {
+    const getFileDb = await Pengajuan.findAll({
+      where: {
+        userId: userId,
+      },
+      include: [Filestorage]
+    });
+
+
+
+    const dbData = getFileDb.map((file) => {
+      return file.Filestorages.map((storage) => storage.filename);
+    });
+
+
+    const [storageFiles] = await bucket.getFiles();
+
+    const filterStorageFiles = storageFiles.filter((file) =>
+      dbData.flat().includes(file.name)
+    );
+
 
     if (filterStorageFiles.length === 0) {
       // Handle the case where no matching files are found
@@ -210,6 +266,7 @@ const deleteFileHandler = async (req, res) => {
 module.exports = {
   uploadHandler,
   getAllFileHandler,
+  getFileHandler,
   editFileHandler,
   deleteFileHandler,
 };
