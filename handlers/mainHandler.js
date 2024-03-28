@@ -29,7 +29,7 @@ const createPengajuan = async (req, res) => {
       tanggal,
       namep,
       namep1,
-      namep2:formattedNamep2,
+      namep2: formattedNamep2,
       nikp1,
       nikp2: formattedNikp2,
       telp,
@@ -108,6 +108,9 @@ const updatePengajuan = async (req, res) => {
     kota,
   } = req.body;
 
+  const formattedNikp2 = nikp2 ? nikp2 : null;
+  const formattedNamep2 = namep2 ? namep2 : null;
+
   try {
     const exPengajuan = await Pengajuan.findByPk(id);
 
@@ -118,9 +121,9 @@ const updatePengajuan = async (req, res) => {
     exPengajuan.tanggal = tanggal;
     exPengajuan.namep = namep;
     exPengajuan.namep1 = namep1;
-    exPengajuan.namep2 = namep2;
+    exPengajuan.namep2 = formattedNamep2;
     exPengajuan.nikp1 = nikp1;
-    exPengajuan.nikp2 = nikp2;
+    exPengajuan.nikp2 = formattedNikp2;
     exPengajuan.telp = telp;
     exPengajuan.alamat = alamat;
     exPengajuan.rt = rt;
