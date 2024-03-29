@@ -85,7 +85,9 @@ const getOneLokasi = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const getPengajuan = await Lokasi.findByPk(id);
+    const getPengajuan = await Lokasi.findByPk(id, {
+      include: [Pengajuan]
+    });
 
     if(!getPengajuan)
       return res.status(404).json({message: "data tidak ditemukan"})
