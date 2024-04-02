@@ -70,8 +70,6 @@ const getLokasi = async (req, res) => {
     if (!getPengajuan.userId === userId)
       return res.status(401).json({ message: "Unauthorized User" });
 
-      console.log(getPengajuan)
-
     return res.json(getPengajuan);
   } catch (err) {
     console.log(err);

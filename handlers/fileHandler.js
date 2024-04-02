@@ -9,20 +9,20 @@ const bucket = storage.bucket("pdf_bucket_01");
 const uploadHandler = async (req, res) => {
   try {
     await processFile(req, res);
-    
-    const userId = req.userId;
-    
-    const getFileDb = await Pengajuan.findAll({
-      where: {
-        userId: userId,
-      },
-    });
 
-    const dbData = getFileDb.map((file) => file.id);
+    // const userId = req.userId;
+
+    // const getFileDb = await Pengajuan.findAll({
+    //   where: {
+    //     userId: userId,
+    //   },
+    // });
+
+    // const dbData = getFileDb.map((file) => file.id);
 
     const pengajuanId = parseInt(req.body.pengajuanId);
 
-    if (!dbData.includes(pengajuanId)) return res.status(401).send({ message: "unauthorized" })
+    // if (!dbData.includes(pengajuanId)) return res.status(401).send({ message: "unauthorized" })
 
     if (!pengajuanId) {
       return res
@@ -90,60 +90,58 @@ const getFileHandler = async (req, res) => {
   const pengajuanId = req.params.id;
 
   try {
-    const getFileDb = await Filestorage.findAll({
-      where: {
-        pengajuanId: pengajuanId,
-      },
+    const getFileDb = await Filestorage.findByPk(pengajuanId, {
+      include: [Pengajuan]
     });
 
-    const dbData = getFileDb.map((file) => file.filename);
-
-    const [storageFiles] = await bucket.getFiles();
-
-    const filterStorageFiles = storageFiles.filter((file) =>
-      dbData.includes(file.name)
-    );
-
-    if (filterStorageFiles.length === 0) {
-      // Handle the case where no matching files are found
-      return res.status(404).json({ message: "No matching files found." });
+    if (!getFileDb) {
+      return res.status(404).json({ message: "File not found." });
     }
 
-    const fileInfos = filterStorageFiles.map((file) => ({
-      name: file.name,
-      url: file.metadata.mediaLink,
-    }));
+    // const [storageFiles] = await bucket.getFiles();
 
-    return res.status(200).json(fileInfos);
+    // const filterStorageFiles = storageFiles.filter((file) =>
+    //   file.name === fileId
+    // );
+
+    // if (filterStorageFiles.length === 0) {
+    //   // Handle the case where no matching files are found
+    //   return res.status(404).json({ message: "No matching files found." });
+    // }
+
+    // const fileInfos = filterStorageFiles.map((file) => ({
+    //   id: file.id,
+    //   name: file.name,
+    //   url: file.metadata.mediaLink,
+    // }));
+    // console.log(fileInfos);
+
+    return res.status(200).json(getFileDb);
   } catch (err) {
     console.error("Error:", err);
     return res.status(500).json({ message: "Internal server error." });
   }
 };
+
 const getAllFileHandler = async (req, res) => {
-  const pengajuanId = req.params.id;
 
   const userId = req.userId;
 
   try {
-    const getFileDb = await Pengajuan.findAll({
-      where: {
-        userId: userId,
-      },
-      include: [Filestorage]
-    });
+    const getFileDb = await Filestorage.findAll();
 
+    if(getFileDb.length === 0){
+      return res.status(404).json({message: "data tidak ditemukan"})
+    }
 
-
-    const dbData = getFileDb.map((file) => {
-      return file.Filestorages.map((storage) => storage.filename);
-    });
-
+    const filenames = getFileDb.flatMap(storage => storage.filename);
 
     const [storageFiles] = await bucket.getFiles();
 
+
+    // filter daya banyak dari cloud storage
     const filterStorageFiles = storageFiles.filter((file) =>
-      dbData.flat().includes(file.name)
+      filenames.flat().includes(file.name)
     );
 
 
@@ -152,7 +150,8 @@ const getAllFileHandler = async (req, res) => {
       return res.status(404).json({ message: "No matching files found." });
     }
 
-    const fileInfos = filterStorageFiles.map((file) => ({
+    const fileInfos = filterStorageFiles.map((file, index) => ({
+      id: getFileDb[index].id,
       name: file.name,
       url: file.metadata.mediaLink,
     }));
@@ -165,28 +164,44 @@ const getAllFileHandler = async (req, res) => {
 };
 
 const editFileHandler = async (req, res) => {
+  const fileId = req.params.id;
+
+  await processFile(req, res);
+
+  const pengajuanId = req.body.pengajuanId;
+  
+  if (!pengajuanId) {
+    return res
+      .status(400)
+      .send({ message: "pilih pengajuan untuk file terlebih dahulu" });
+  }
+
+  if (!req.file) {
+    try {
+      const exFile = await Filestorage.findByPk(fileId);
+      if (!exFile) {
+        return res
+          .status(400)
+          .send({ message: "file tidak ditemukan didatabase" });
+      }
+
+      exFile.pengajuanId = pengajuanId;
+      await exFile.save();
+
+      return res.json({ message: "PengajuanId berhasil diubah" });
+
+    } catch (error) {
+      return res.status(500).json({ message: error });
+    }
+  }
+
   try {
-    const fileId = req.params.id;
-
-    await processFile(req, res);
-
-    const pengajuanId = req.body.id;
-    if (!pengajuanId) {
-      return res
-        .status(400)
-        .send({ message: "pilih pengajuan untuk file terlebih dahulu" });
-    }
-
-    if (!req.file) {
-      return res.status(400).send({ message: "tolong upload file" });
-    }
-
     const uniqueSuffix =
-      Date.now() +
-      "-" +
-      Math.round(Math.random() * 1e9) +
-      "-" +
-      req.file.originalname;
+    Date.now() +
+    "-" +
+    Math.round(Math.random() * 1e9) +
+    "-" +
+    req.file.originalname;
 
     //cari file yang mau di update di dalam db
     const exFile = await Filestorage.findByPk(fileId);
