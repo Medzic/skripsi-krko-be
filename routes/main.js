@@ -43,6 +43,6 @@ router.post("/dokumen/upload", authMiddleware, uploadHandler);
 router.get("/dokumen", authMiddleware, getAllFileHandler);
 router.get("/dokumen/:id", authMiddleware, getFileHandler);
 router.put("/dokumen/edit/:id", authMiddleware, editFileHandler);
-router.delete("/dokumen/:id", authMiddleware, deleteFileHandler);
+router.delete("/dokumen/delete/:id", authMiddleware, deleteFileHandler);
 
 module.exports = router;

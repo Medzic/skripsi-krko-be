@@ -10,6 +10,10 @@ const secretKey = process.env.KRKO_JWT_SECRET;
 const registerHandler = async (req, res) => {
   const { nama, email, telp, alamat, password } = req.body;
 
+  if(!password || !nama || !telp || !alamat){
+    return res.status(400).json({error: "data tidak boleh kosong"})
+  }
+
   const hashedPassword = await bcrypt.hash(password, saltRound);
 
   try {
@@ -18,7 +22,7 @@ const registerHandler = async (req, res) => {
       where: { email: req.body.email },
     });
     if (existingUser) {
-      return res.status(400).json({ error: "Email already exists" });
+      return res.status(400).json({ error: "Email Sudah dipakai, silahkan pakai email lain" });
     }
 
     const users = await User.create({
@@ -114,13 +118,17 @@ const adminLoginHandler = async (req, res) => {
       },
     });
 
+    if(!user){
+      return res.status(401).json({message: "Anda Bukan Admin!"})
+    }
+
     const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
 
     if (!passwordMatch) {
-      res.status(401).json({ error: "Invalid email or password" });
+      return res.status(401).json({ message: "Password Salah!" });
     }
 
-    const adminToken = jwt.sign(
+    const token = jwt.sign(
       {
         userId: user.id,
         nama: user.nama,
@@ -134,7 +142,7 @@ const adminLoginHandler = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "Admin Login successful", adminToken });
+      .json({ role: "Admin", token });
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);

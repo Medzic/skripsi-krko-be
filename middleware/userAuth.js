@@ -46,9 +46,10 @@ const checkAdmin = async (req, res, next) => {
       if (!decoded.role || decoded.role !== "Admin") {
         return res.status(401).json({ message: "Antum bukan admin, silahkan hubungi admin" });
       }
+      req.role = decoded.role;
+      next();
     });
 
-    next();
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Internal Server Error" });

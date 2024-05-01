@@ -3,6 +3,7 @@ const { Pengajuan } = require("../models");
 const processFile = require("../middleware/upload");
 const { format } = require("util");
 const { Storage } = require("@google-cloud/storage");
+const { where } = require("sequelize");
 const storage = new Storage({ keyFilename: "keyfilepdf.json" });
 const bucket = storage.bucket("pdf_bucket_01");
 
@@ -128,14 +129,28 @@ const getAllFileHandler = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const getFileDb = await Filestorage.findAll();
+    const pengajuanId = await Pengajuan.findAll({
+      where: {
+        userId: userId
+      }
+    })
 
-    if(getFileDb.length === 0){
-      return res.status(404).json({message: "data tidak ditemukan"})
+
+    const pengajuanIds = pengajuanId.map(pengajuan => pengajuan.id);
+
+    const getFileDb = await Filestorage.findAll({
+      where: {
+        pengajuanId: pengajuanIds
+      }
+    });
+
+    if (getFileDb.length === 0) {
+      return res.status(404).json({ message: "data tidak ditemukan" })
     }
 
     const filenames = getFileDb.flatMap(storage => storage.filename);
 
+    //get all from cloud
     const [storageFiles] = await bucket.getFiles();
 
 
@@ -146,12 +161,12 @@ const getAllFileHandler = async (req, res) => {
 
 
     if (filterStorageFiles.length === 0) {
-      // Handle the case where no matching files are found
       return res.status(404).json({ message: "No matching files found." });
     }
 
     const fileInfos = filterStorageFiles.map((file, index) => ({
       id: getFileDb[index].id,
+      pengajuanId: getFileDb[index].pengajuanId,
       name: file.name,
       url: file.metadata.mediaLink,
     }));
@@ -169,7 +184,7 @@ const editFileHandler = async (req, res) => {
   await processFile(req, res);
 
   const pengajuanId = req.body.pengajuanId;
-  
+
   if (!pengajuanId) {
     return res
       .status(400)
@@ -197,11 +212,11 @@ const editFileHandler = async (req, res) => {
 
   try {
     const uniqueSuffix =
-    Date.now() +
-    "-" +
-    Math.round(Math.random() * 1e9) +
-    "-" +
-    req.file.originalname;
+      Date.now() +
+      "-" +
+      Math.round(Math.random() * 1e9) +
+      "-" +
+      req.file.originalname;
 
     //cari file yang mau di update di dalam db
     const exFile = await Filestorage.findByPk(fileId);

@@ -87,9 +87,9 @@ const getOneLokasi = async (req, res) => {
       include: [Pengajuan]
     });
 
-    if(!getPengajuan)
-      return res.status(404).json({message: "data tidak ditemukan"})
-    
+    if (!getPengajuan)
+      return res.status(404).json({ message: "data tidak ditemukan" })
+
 
     if (!getPengajuan.userId === userId)
       return res.status(401).json({ message: "Unauthorized User" });
