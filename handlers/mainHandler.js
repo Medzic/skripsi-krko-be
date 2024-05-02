@@ -59,6 +59,7 @@ const getAllPengajuan = async (req, res) => {
       },
     });
 
+
     return res.json(getPengajuan);
   } catch (err) {
     console.log(err);
