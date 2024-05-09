@@ -1,5 +1,6 @@
 const { where } = require("sequelize");
 const { Pengajuan } = require("../models");
+const { Lokasi } =require('../models')
 
 const createPengajuan = async (req, res) => {
   const {
@@ -57,6 +58,7 @@ const getAllPengajuan = async (req, res) => {
       where: {
         userId: userId,
       },
+      include: [Lokasi],
     });
 
 

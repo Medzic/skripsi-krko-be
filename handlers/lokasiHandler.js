@@ -103,6 +103,7 @@ const getOneLokasi = async (req, res) => {
 
 const updateLokasi = async (req, res) => {
   const id = req.params.id;
+  const userId = req.userId;
 
   const {
     pengajuanId,
@@ -120,6 +121,12 @@ const updateLokasi = async (req, res) => {
 
   try {
     const exLokasi = await Lokasi.findByPk(id);
+    const getPengajuan = await Pengajuan.findAll({
+      where: {
+        userId: userId,
+      },
+      include: [Lokasi],
+    });
 
     exLokasi.pengajuanId = pengajuanId;
     exLokasi.loktanah = loktanah;
