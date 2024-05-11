@@ -58,7 +58,7 @@ const getAllPengajuan = async (req, res) => {
       where: {
         userId: userId,
       },
-      include: [Lokasi],
+      include: {all: true},
     });
 
 
