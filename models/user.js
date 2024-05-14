@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull:false,
     },
+    nik: {
+      type: DataTypes.BIGINT,
+      allowNull:false,
+    },
     telp: {
       type: DataTypes.STRING,
       allowNull:false,

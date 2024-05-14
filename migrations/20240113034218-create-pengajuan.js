@@ -4,16 +4,20 @@ module.exports = {
   async up(queryInterface, DataTypes) {
     await queryInterface.createTable('Pengajuans', {
       id: {
-        allowNull: false,
-        autoIncrement: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
-        type: DataTypes.INTEGER
+        allowNull: false,
       },
       noreg: {
         type: DataTypes.STRING
       },
       notes: {
         type: DataTypes.STRING
+      },
+      arsip: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
       },
       tanggal: {
         type: DataTypes.DATEONLY,

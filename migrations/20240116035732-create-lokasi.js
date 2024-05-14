@@ -4,10 +4,10 @@ module.exports = {
   async up(queryInterface, DataTypes) {
     await queryInterface.createTable('Lokasis', {
       id: {
-        allowNull: false,
-        autoIncrement: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
-        type: DataTypes.INTEGER
+        allowNull: false
       },
       loktanah:{
         type: DataTypes.STRING,
@@ -50,7 +50,7 @@ module.exports = {
         allowNull: false
       },
       pengajuanId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.CHAR,
         allowNull: false
       },
       createdAt: {

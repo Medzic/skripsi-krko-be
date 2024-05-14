@@ -8,9 +8,9 @@ const saltRound = 10;
 const secretKey = process.env.KRKO_JWT_SECRET;
 
 const registerHandler = async (req, res) => {
-  const { nama, email, telp, alamat, password } = req.body;
+  const { nama, email, nik, telp, alamat, password } = req.body;
 
-  if(!password || !nama || !telp || !alamat){
+  if(!password || !nik || !nama || !telp || !alamat){
     return res.status(400).json({error: "data tidak boleh kosong"})
   }
 
@@ -28,6 +28,7 @@ const registerHandler = async (req, res) => {
     const users = await User.create({
       nama,
       email,
+      nik,
       telp,
       alamat,
       hashedPassword,
@@ -40,17 +41,17 @@ const registerHandler = async (req, res) => {
 };
 
 const loginHandler = async (req, res) => {
-  const { email, password } = req.body;
+  const { nik, password } = req.body;
 
   try {
     const user = await User.findOne({
       where: {
-        email: email,
+        nik: nik,
       },
     });
 
     if (!user) {
-      return res.status(401).json({ error: "Email yang anda masukkan salah" });
+      return res.status(401).json({ error: "nik yang anda masukkan salah" });
     }
     
     const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
@@ -63,7 +64,7 @@ const loginHandler = async (req, res) => {
     const token = jwt.sign(
       {
         userId: user.id,
-        email: user.email,
+        nik: user.nik,
       },
       secretKey,
       {

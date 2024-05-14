@@ -16,11 +16,21 @@ module.exports = (sequelize, DataTypes) => {
   }
   Pengajuan.init(
     {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+        primaryKey: true,
+      },
       noreg: {
         type: DataTypes.STRING,
       },
       notes: {
         type: DataTypes.STRING,
+      },
+      arsip: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
       tanggal: {
         type: DataTypes.DATEONLY,

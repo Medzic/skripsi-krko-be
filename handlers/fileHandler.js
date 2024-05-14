@@ -21,7 +21,9 @@ const uploadHandler = async (req, res) => {
 
     // const dbData = getFileDb.map((file) => file.id);
 
-    const pengajuanId = parseInt(req.body.pengajuanId);
+    const {pengajuanId} = req.body 
+
+    // const pengajuanId = parseInt(req.body.pengajuanId);
 
     // if (!dbData.includes(pengajuanId)) return res.status(401).send({ message: "unauthorized" })
 

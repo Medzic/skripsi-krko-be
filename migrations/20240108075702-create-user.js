@@ -13,6 +13,10 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false
       },
+      nik: {
+        type: DataTypes.BIGINT,
+        allowNull: false
+      },
       email: {
         type: DataTypes.STRING,
         allowNull: false

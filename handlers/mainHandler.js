@@ -1,6 +1,6 @@
 const { where } = require("sequelize");
 const { Pengajuan } = require("../models");
-const { Lokasi } =require('../models')
+const { Lokasi } =require('../models');
 
 const createPengajuan = async (req, res) => {
   const {
@@ -76,7 +76,9 @@ const getOnePengajuan = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const getOnePengajuan = await Pengajuan.findByPk(id);
+    const getOnePengajuan = await Pengajuan.findByPk(id, {
+      include: {all: true}
+    });
 
     //filter user yang dapat mengakses berdasarkan id user dari decoded token
     if (getOnePengajuan.userId !== userId)
@@ -164,10 +166,57 @@ const deletePengajuan = async (req, res) => {
   }
 };
 
+const pengajuanReconfirm = async (req, res) => {
+  const { notes } = req.body;
+
+  const userId = req.userId;
+
+  const id = req.params.id;
+
+  try {
+    const selectedPengajuan = await Pengajuan.findByPk(id);
+
+    if (selectedPengajuan.userId !== userId)
+      return res.status(404).json({ message: "Unauthorized User" });
+
+    selectedPengajuan.notes = notes;
+
+    await selectedPengajuan.save();
+    return res.json(selectedPengajuan);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+}
+const pengajuanArsip = async (req, res) => {
+  const { arsip } = req.body;
+
+  const userId = req.userId;
+
+  const id = req.params.id;
+
+  try {
+    const selectedPengajuan = await Pengajuan.findByPk(id);
+
+    if (selectedPengajuan.userId !== userId)
+      return res.status(404).json({ message: "Unauthorized User" });
+
+    selectedPengajuan.arsip = arsip;
+
+    await selectedPengajuan.save();
+    return res.json(selectedPengajuan);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+}
+
 module.exports = {
   createPengajuan,
   getAllPengajuan,
   getOnePengajuan,
   updatePengajuan,
   deletePengajuan,
+  pengajuanReconfirm,
+  pengajuanArsip,
 };

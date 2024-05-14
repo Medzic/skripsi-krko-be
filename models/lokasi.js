@@ -15,6 +15,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Lokasi.init({
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      primaryKey: true,
+    },
     loktanah:{
       type: DataTypes.STRING,
       allowNull: false
@@ -56,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     pengajuanId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.CHAR,
       allowNull: false
     }
   }, {

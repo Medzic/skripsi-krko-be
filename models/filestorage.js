@@ -16,12 +16,18 @@ module.exports = (sequelize, DataTypes) => {
   }
   Filestorage.init(
     {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+        primaryKey: true,
+      },
       filename: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       pengajuanId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.CHAR,
         allowNull: false,
       },
     },

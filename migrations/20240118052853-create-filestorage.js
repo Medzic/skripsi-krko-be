@@ -4,17 +4,17 @@ module.exports = {
   async up(queryInterface, DataTypes) {
     await queryInterface.createTable('Filestorages', {
       id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: DataTypes.INTEGER
+        primaryKey: true
       },
       filename: {
         type: DataTypes.STRING,
         allowNull: false
       },
       pengajuanId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.CHAR,
         allowNull: false
       },
       createdAt: {
