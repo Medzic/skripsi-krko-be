@@ -77,7 +77,7 @@ const getOnePengajuan = async (req, res) => {
 
   try {
     const getOnePengajuan = await Pengajuan.findByPk(id, {
-      include: {all: true}
+      include: [Lokasi]
     });
 
     //filter user yang dapat mengakses berdasarkan id user dari decoded token
