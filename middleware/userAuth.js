@@ -47,6 +47,7 @@ const checkAdmin = async (req, res, next) => {
         return res.status(401).json({ message: "Antum bukan admin, silahkan hubungi admin" });
       }
       req.role = decoded.role;
+      req.userId = decoded.userId;
       next();
     });
 

@@ -21,8 +21,15 @@ const registerHandler = async (req, res) => {
     const existingUser = await User.findOne({
       where: { email: req.body.email },
     });
+    const existingNikUser = await User.findOne({
+      where: { nik: req.body.nik },
+    });
     if (existingUser) {
       return res.status(400).json({ error: "Email Sudah dipakai, silahkan pakai email lain" });
+    }
+
+    if(existingNikUser){
+      return res.status(400).json({error: "NIK sudah di pakai"})
     }
 
     const users = await User.create({
@@ -80,7 +87,7 @@ const loginHandler = async (req, res) => {
 };
 
 const adminRegisterHandler = async (req, res) => {
-  const { nama, email, telp, alamat, role, password } = req.body;
+  const { nama, email, nik, telp, alamat, role, password } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, saltRound);
 
@@ -89,13 +96,23 @@ const adminRegisterHandler = async (req, res) => {
     const existingUser = await User.findOne({
       where: { email: req.body.email },
     });
+
+    const existingNikUser = await User.findOne({
+      where: { nik: req.body.nik },
+    });
+
     if (existingUser) {
       return res.status(400).json({ error: "Email already exists" });
+    }
+
+    if(existingNikUser){
+      return res.status(400).json({error: "NIK sudah di pakai"})
     }
 
     const users = await User.create({
       nama,
       email,
+      nik,
       telp,
       alamat,
       role,

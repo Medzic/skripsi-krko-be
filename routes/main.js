@@ -23,6 +23,7 @@ const {
   deleteFileHandler,
   getFileHandler,
 } = require("../handlers/fileHandler");
+const { getUser, updateUser, updatePassword } = require("../handlers/userHandler");
 
 const router = express.Router();
 
@@ -48,5 +49,10 @@ router.get("/dokumen", authMiddleware, getAllFileHandler);
 router.get("/dokumen/:id", authMiddleware, getFileHandler);
 router.put("/dokumen/edit/:id", authMiddleware, editFileHandler);
 router.delete("/dokumen/delete/:id", authMiddleware, deleteFileHandler);
+
+// user endpoint
+router.get("/getUser", authMiddleware, getUser);
+router.put("/updateUser", authMiddleware,updateUser);
+router.put("/updatePassword", authMiddleware, updatePassword)
 
 module.exports = router;
