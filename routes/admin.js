@@ -1,15 +1,17 @@
 const express = require('express');
-const {checkAdmin} = require('../middleware/userAuth');
-const { adminAccHandler, getAccPengajuan, getSpecFile, getOneAccPengajuan } = require('../handlers/adminHandler');
+const { checkAdmin } = require('../middleware/userAuth');
+const { adminAccHandler, getAccPengajuan, getSpecFile, getOneAccPengajuan, getJustPengajuan } = require('../handlers/adminHandler');
 const { adminRegisterHandler } = require('../handlers/authHandler');
 
 const router = express.Router();
 
 router.post("/admin/register", checkAdmin, adminRegisterHandler);
 
-router.patch('/admin/pengajuan/:id', checkAdmin ,adminAccHandler);
+router.patch('/admin/pengajuan/:id', checkAdmin, adminAccHandler);
 
 router.get("/admin/getaccpengajuan", checkAdmin, getAccPengajuan);
+
+router.get("/admin/getalljustpengajuan", checkAdmin, getJustPengajuan);
 
 router.get("/admin/getoneaccpengajuan/:id", checkAdmin, getOneAccPengajuan);
 

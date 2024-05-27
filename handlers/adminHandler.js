@@ -28,12 +28,25 @@ const getAccPengajuan = async (req, res) => {
   const role = req.role
   try {
     const getAllUser = await User.findAll({
-      include: {all: true, nested: true}
+      include: { all: true, nested: true }
     })
 
-    if(!getAllUser) return res.status(404).json({message: 'Data Tidak Ditemukan'});
+    if (!getAllUser) return res.status(404).json({ message: 'Data Tidak Ditemukan' });
 
     return res.json(getAllUser)
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+}
+
+const getJustPengajuan = async (req, res) => {
+  try {
+    const getPengajuan = await Pengajuan.findAll()
+
+    if (!getPengajuan) return res.status(404).json({ message: 'Data Tidak Ditemukan' })
+
+    return res.json(getPengajuan)
   } catch (err) {
     console.log(err);
     return res.status(500).json(err);
@@ -43,11 +56,11 @@ const getAccPengajuan = async (req, res) => {
 const getOneAccPengajuan = async (req, res) => {
   const pid = req.params.id
   try {
-    const getOneAccPengajuan = await Pengajuan.findByPk(pid,{
-      include: { all : true}
+    const getOneAccPengajuan = await Pengajuan.findByPk(pid, {
+      include: { all: true }
     })
 
-    if(!getOneAccPengajuan) return res.status(404).json({message: 'Data Tidak Ditemukan'});
+    if (!getOneAccPengajuan) return res.status(404).json({ message: 'Data Tidak Ditemukan' });
 
     return res.json(getOneAccPengajuan)
   } catch (err) {
@@ -103,6 +116,7 @@ const getSpecFile = async (req, res) => {
 module.exports = {
   adminAccHandler,
   getOneAccPengajuan,
+  getJustPengajuan,
   getAccPengajuan,
   getSpecFile
 };
