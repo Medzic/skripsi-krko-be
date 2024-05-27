@@ -21,7 +21,7 @@ const uploadHandler = async (req, res) => {
 
     // const dbData = getFileDb.map((file) => file.id);
 
-    const {pengajuanId} = req.body 
+    const { pengajuanId } = req.body
 
     // const pengajuanId = parseInt(req.body.pengajuanId);
 
@@ -295,10 +295,38 @@ const deleteFileHandler = async (req, res) => {
   }
 };
 
+const deleteAllFileHandler = async (req, res) => {
+  try {
+    const pid = req.params.id
+
+    const exFiles = await Filestorage.findAll({
+      where: {
+        pengajuanId: pid
+      },
+    })
+
+    if (!exFiles || exFiles.length === 0) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    for (const file of exFiles) {
+      const { filename } = file;
+      await bucket.file(filename).delete();
+      await file.destroy();
+    }
+
+    return res.status(200).json({ message: "file berhasil dihapus" });
+  } catch (err) {
+    return res.status(500).json({ message: err });
+  }
+
+}
+
 module.exports = {
   uploadHandler,
   getAllFileHandler,
   getFileHandler,
   editFileHandler,
   deleteFileHandler,
+  deleteAllFileHandler
 };

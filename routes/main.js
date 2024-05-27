@@ -15,6 +15,7 @@ const {
   getLokasi,
   deleteLokasi,
   getOneLokasi,
+  deleteLokasiPengajuan,
 } = require("../handlers/lokasiHandler");
 const {
   uploadHandler,
@@ -22,6 +23,7 @@ const {
   editFileHandler,
   deleteFileHandler,
   getFileHandler,
+  deleteAllFileHandler,
 } = require("../handlers/fileHandler");
 const { getUser, updateUser, updatePassword } = require("../handlers/userHandler");
 
@@ -42,6 +44,7 @@ router.get("/lokasi", authMiddleware, getLokasi);
 router.get("/lokasi/:id", authMiddleware, getOneLokasi);
 router.put("/lokasi/edit/:id", authMiddleware, updateLokasi);
 router.delete("/lokasi/delete/:id", authMiddleware, deleteLokasi);
+router.delete("/lokasi/deletepengajuan/:id", authMiddleware, deleteLokasiPengajuan);
 
 //dokumen endpoint
 router.post("/dokumen/upload", authMiddleware, uploadHandler);
@@ -49,6 +52,7 @@ router.get("/dokumen", authMiddleware, getAllFileHandler);
 router.get("/dokumen/:id", authMiddleware, getFileHandler);
 router.put("/dokumen/edit/:id", authMiddleware, editFileHandler);
 router.delete("/dokumen/delete/:id", authMiddleware, deleteFileHandler);
+router.delete("/dokumen/alldelete/:id", authMiddleware, deleteAllFileHandler);
 
 // user endpoint
 router.get("/getUser", authMiddleware, getUser);

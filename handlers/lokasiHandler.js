@@ -169,10 +169,33 @@ const deleteLokasi = async (req, res) => {
   }
 };
 
+const deleteLokasiPengajuan = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const getLokasi = await Lokasi.findOne({
+      where: {
+        pengajuanId: id
+      }
+    });
+
+    if (!getLokasi) {
+      return res.status(404).json({ message: "Lokasi tidak ditemukan" });
+    }
+    
+    await getLokasi.destroy();
+    return res.json({ message: "Lokasi berhasil Dihapus" })
+  } catch (error) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+}
+
 module.exports = {
   createLokasi,
   updateLokasi,
   getLokasi,
   getOneLokasi,
+  deleteLokasiPengajuan,
   deleteLokasi
 };
