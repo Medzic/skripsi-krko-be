@@ -19,12 +19,12 @@ module.exports = {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
+      picked: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
       tanggal: {
         type: DataTypes.DATEONLY,
-        allowNull: false
-      },
-      namep: {
-        type: DataTypes.STRING,
         allowNull: false
       },
       namep1: {
@@ -33,6 +33,9 @@ module.exports = {
       },
       namep2: {
         type: DataTypes.STRING
+      },
+      namep3: {
+        type: DataTypes.STRING,
       },
       nikp1: {
         type: DataTypes.BIGINT,

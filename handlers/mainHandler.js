@@ -5,9 +5,9 @@ const { Lokasi } = require('../models');
 const createPengajuan = async (req, res) => {
   const {
     tanggal,
-    namep,
     namep1,
     namep2,
+    namep3,
     nikp1,
     nikp2,
     telp,
@@ -25,12 +25,13 @@ const createPengajuan = async (req, res) => {
 
     const formattedNikp2 = nikp2 ? nikp2 : null;
     const formattedNamep2 = namep2 ? namep2 : null;
+    const formattedNamep3 = namep3 ? namep3 : null;
 
     const pengajuans = await Pengajuan.create({
       tanggal,
-      namep,
       namep1,
       namep2: formattedNamep2,
+      namep3: formattedNamep3,
       nikp1,
       nikp2: formattedNikp2,
       telp,
@@ -99,9 +100,9 @@ const updatePengajuan = async (req, res) => {
 
   const {
     tanggal,
-    namep,
     namep1,
     namep2,
+    namep3,
     nikp1,
     nikp2,
     telp,
@@ -115,6 +116,7 @@ const updatePengajuan = async (req, res) => {
 
   const formattedNikp2 = nikp2 ? nikp2 : null;
   const formattedNamep2 = namep2 ? namep2 : null;
+  const formattedNamep3 = namep3 ? namep3 : null;
 
   try {
     const exPengajuan = await Pengajuan.findByPk(id);
@@ -124,9 +126,9 @@ const updatePengajuan = async (req, res) => {
       return res.status(404).json({ message: "Unauthorized User" });
 
     exPengajuan.tanggal = tanggal;
-    exPengajuan.namep = namep;
     exPengajuan.namep1 = namep1;
     exPengajuan.namep2 = formattedNamep2;
+    exPengajuan.namep3 = formattedNamep3;
     exPengajuan.nikp1 = nikp1;
     exPengajuan.nikp2 = formattedNikp2;
     exPengajuan.telp = telp;
@@ -210,6 +212,28 @@ const pengajuanArsip = async (req, res) => {
     return res.status(500).json(err);
   }
 }
+const pengajuaPicked = async (req, res) => {
+  const { picked } = req.body;
+
+  const userId = req.userId;
+
+  const id = req.params.id;
+
+  try {
+    const selectedPengajuan = await Pengajuan.findByPk(id);
+
+    if (selectedPengajuan.userId !== userId)
+      return res.status(404).json({ message: "Unauthorized User" });
+
+    selectedPengajuan.picked = picked;
+
+    await selectedPengajuan.save();
+    return res.json(selectedPengajuan);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json(err);
+  }
+}
 
 module.exports = {
   createPengajuan,
@@ -219,4 +243,5 @@ module.exports = {
   deletePengajuan,
   pengajuanReconfirm,
   pengajuanArsip,
+  pengajuaPicked,
 };

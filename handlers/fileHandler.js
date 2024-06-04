@@ -168,7 +168,7 @@ const getAllFileHandler = async (req, res) => {
 
     const fileInfos = filterStorageFiles.map((file, index) => ({
       id: getFileDb[index].id,
-      pengajuanId: getFileDb[index].pengajuanId,
+      pengajuanId: pengajuanId[index].namep1,
       name: file.name,
       url: file.metadata.mediaLink,
     }));
