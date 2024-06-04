@@ -73,17 +73,14 @@ const getAllPengajuan = async (req, res) => {
 const getOnePengajuan = async (req, res) => {
   // variable untuk menentukan data yang dipilih berdasarkan primary key
   const id = req.params.id;
-  //variable untuk menentukan user berdasarkan decoded jwt token
-  const userId = req.userId;
 
   try {
     const getOnePengajuan = await Pengajuan.findByPk(id, {
       include: [Lokasi]
     });
 
-    //filter user yang dapat mengakses berdasarkan id user dari decoded token
-    if (getOnePengajuan.userId !== userId)
-      return res.status(401).json({ message: "Unauthorized User" });
+    if (!getOnePengajuan)
+      return res.status(401).json({ message: "Not Found" });
 
     return res.json(getOnePengajuan);
   } catch (err) {
@@ -193,15 +190,14 @@ const pengajuanReconfirm = async (req, res) => {
 const pengajuanArsip = async (req, res) => {
   const { arsip } = req.body;
 
-  const userId = req.userId;
 
   const id = req.params.id;
 
   try {
     const selectedPengajuan = await Pengajuan.findByPk(id);
 
-    if (selectedPengajuan.userId !== userId)
-      return res.status(404).json({ message: "Unauthorized User" });
+    if (!selectedPengajuan)
+      return res.status(404).json({ message: "Not Found" });
 
     selectedPengajuan.arsip = arsip;
 
@@ -212,18 +208,16 @@ const pengajuanArsip = async (req, res) => {
     return res.status(500).json(err);
   }
 }
-const pengajuaPicked = async (req, res) => {
+const pengajuanPicked = async (req, res) => {
   const { picked } = req.body;
-
-  const userId = req.userId;
 
   const id = req.params.id;
 
   try {
     const selectedPengajuan = await Pengajuan.findByPk(id);
 
-    if (selectedPengajuan.userId !== userId)
-      return res.status(404).json({ message: "Unauthorized User" });
+    if (!selectedPengajuan)
+      return res.status(404).json({ message: "Not Found" });
 
     selectedPengajuan.picked = picked;
 
@@ -243,5 +237,5 @@ module.exports = {
   deletePengajuan,
   pengajuanReconfirm,
   pengajuanArsip,
-  pengajuaPicked,
+  pengajuanPicked,
 };

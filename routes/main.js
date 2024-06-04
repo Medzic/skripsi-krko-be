@@ -8,7 +8,6 @@ const {
   deletePengajuan,
   pengajuanReconfirm,
   pengajuanArsip,
-  pengajuaPicked,
 } = require("../handlers/mainHandler");
 const {
   createLokasi,
@@ -37,7 +36,6 @@ router.get("/pengajuan/:id", authMiddleware, getOnePengajuan);
 router.put("/pengajuan/edit/:id", authMiddleware, updatePengajuan);
 router.patch("/pengajuan/reconfirm/:id", authMiddleware, pengajuanReconfirm);
 router.patch("/pengajuan/arsip/:id", authMiddleware, pengajuanArsip);
-router.patch("/pengajuan/picked/:id", authMiddleware, pengajuaPicked);
 router.delete("/pengajuan/delete/:id", authMiddleware, deletePengajuan);
 
 //lokasi endpoint

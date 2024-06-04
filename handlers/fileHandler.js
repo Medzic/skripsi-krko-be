@@ -150,7 +150,7 @@ const getAllFileHandler = async (req, res) => {
       return res.status(404).json({ message: "data tidak ditemukan" })
     }
 
-    const filenames = getFileDb.flatMap(storage => storage.filename);
+    const filenames = getFileDb.map(storage => storage.filename);
 
     //get all from cloud
     const [storageFiles] = await bucket.getFiles();
@@ -158,7 +158,7 @@ const getAllFileHandler = async (req, res) => {
 
     // filter daya banyak dari cloud storage
     const filterStorageFiles = storageFiles.filter((file) =>
-      filenames.flat().includes(file.name)
+      filenames.includes(file.name)
     );
 
 
@@ -166,14 +166,26 @@ const getAllFileHandler = async (req, res) => {
       return res.status(404).json({ message: "No matching files found." });
     }
 
-    const fileInfos = filterStorageFiles.map((file, index) => ({
-      id: getFileDb[index].id,
-      pengajuanId: pengajuanId[index].namep1,
-      name: file.name,
-      url: file.metadata.mediaLink,
-    }));
+    const fileInfos = new Map();
+    for (const storage of getFileDb) {
+      fileInfos.set(storage.filename, storage);
+    }
 
-    return res.status(200).json(fileInfos);
+    const results = filterStorageFiles.map((file) => {
+      const matchingStorage = fileInfos.get(file.name);
+      if (!matchingStorage) {
+        console.error(`Error: No matching database entry for file ${file.name}`);
+        return null; 
+      }
+      return {
+        id: matchingStorage.id,
+        pengajuanId: matchingStorage.pengajuanId,
+        name: file.name,
+        url: file.metadata.mediaLink,
+      };
+    }).filter(info => info !== null); 
+
+    return res.status(200).json(results);
   } catch (err) {
     console.error("Error:", err);
     return res.status(500).json({ message: "Internal server error." });
