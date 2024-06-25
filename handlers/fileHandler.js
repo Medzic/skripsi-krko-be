@@ -10,9 +10,6 @@ const bucket = storage.bucket("pdf_bucket_01");
 const uploadHandler = async (req, res) => {
   try {
     await processFile(req, res);
-
-    // const userId = req.userId;
-
     // const getFileDb = await Pengajuan.findAll({
     //   where: {
     //     userId: userId,
@@ -22,10 +19,6 @@ const uploadHandler = async (req, res) => {
     // const dbData = getFileDb.map((file) => file.id);
 
     const { pengajuanId } = req.body
-
-    // const pengajuanId = parseInt(req.body.pengajuanId);
-
-    // if (!dbData.includes(pengajuanId)) return res.status(401).send({ message: "unauthorized" })
 
     if (!pengajuanId) {
       return res
